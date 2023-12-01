@@ -60,7 +60,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public static boolean ENABLE_FIELD_TAB = false;
 
-  public static final double DRIVE_KP =1.0;
+  public static final double DRIVE_KP = 1.0;
 
   private static final byte NAVX_UPDATE_FREQUENCY_HZ = 50;
 
@@ -72,15 +72,13 @@ public class SwerveSubsystem extends SubsystemBase {
 
   private final WPI_TalonFX frontRightDriveMotor = new WPI_TalonFX(
       PARAMETERS.getMotorId(SwerveMotors.FrontRightDrive));
-      private final CANSparkMax frontRightSteeringMotor = new CANSparkMax(
-        PARAMETERS.getMotorId(SwerveMotors.FrontRightSteering), MotorType.kBrushless);
-  
+  private final CANSparkMax frontRightSteeringMotor = new CANSparkMax(
+      PARAMETERS.getMotorId(SwerveMotors.FrontRightSteering), MotorType.kBrushless);
 
   private final WPI_TalonFX backLeftDriveMotor = new WPI_TalonFX(
       PARAMETERS.getMotorId(SwerveMotors.BackLeftDrive));
   private final CANSparkMax backLeftSteeringMotor = new CANSparkMax(
       PARAMETERS.getMotorId(SwerveMotors.BackLeftSteering), MotorType.kBrushless);
-  
 
   private final WPI_TalonFX backRightDriveMotor = new WPI_TalonFX(
       PARAMETERS.getMotorId(SwerveMotors.BackRightDrive));
@@ -459,7 +457,6 @@ public class SwerveSubsystem extends SubsystemBase {
   public double getTiltVelocity() {
     return tiltVelocity;
   }
-
 
   @Override
   public void periodic() {
