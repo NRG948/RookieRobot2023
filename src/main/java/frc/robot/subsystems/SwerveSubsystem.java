@@ -12,6 +12,9 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.kauailabs.navx.frc.AHRS;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
@@ -64,23 +67,25 @@ public class SwerveSubsystem extends SubsystemBase {
   // 4 pairs of motors for drive & steering.
   private final WPI_TalonFX frontLeftDriveMotor = new WPI_TalonFX(
       PARAMETERS.getMotorId(SwerveMotors.FrontLeftDrive));
-  private final WPI_TalonFX frontLeftSteeringMotor = new WPI_TalonFX(
-      PARAMETERS.getMotorId(SwerveMotors.FrontLeftSteering));
+  private final CANSparkMax frontLeftSteeringMotor = new CANSparkMax(
+      PARAMETERS.getMotorId(SwerveMotors.FrontLeftSteering), MotorType.kBrushless);
 
   private final WPI_TalonFX frontRightDriveMotor = new WPI_TalonFX(
       PARAMETERS.getMotorId(SwerveMotors.FrontRightDrive));
-  private final WPI_TalonFX frontRightSteeringMotor = new WPI_TalonFX(
-      PARAMETERS.getMotorId(SwerveMotors.FrontRightSteering));
+      private final CANSparkMax frontRightSteeringMotor = new CANSparkMax(
+        PARAMETERS.getMotorId(SwerveMotors.FrontRightSteering), MotorType.kBrushless);
+  
 
   private final WPI_TalonFX backLeftDriveMotor = new WPI_TalonFX(
       PARAMETERS.getMotorId(SwerveMotors.BackLeftDrive));
-  private final WPI_TalonFX backLeftSteeringMotor = new WPI_TalonFX(
-      PARAMETERS.getMotorId(SwerveMotors.BackLeftSteering));
+  private final CANSparkMax backLeftSteeringMotor = new CANSparkMax(
+      PARAMETERS.getMotorId(SwerveMotors.BackLeftSteering), MotorType.kBrushless);
+  
 
   private final WPI_TalonFX backRightDriveMotor = new WPI_TalonFX(
       PARAMETERS.getMotorId(SwerveMotors.BackRightDrive));
-  private final WPI_TalonFX backRightSteeringMotor = new WPI_TalonFX(
-      PARAMETERS.getMotorId(SwerveMotors.BackRightSteering));
+  private final CANSparkMax backRightSteeringMotor = new CANSparkMax(
+      PARAMETERS.getMotorId(SwerveMotors.BackRightSteering), MotorType.kBrushless);
 
   // 4 CANcoders for the steering angle.
   private final CANCoder frontLeftAngle = new CANCoder(
@@ -146,12 +151,12 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   private static SwerveModule createSwerveModule(
       WPI_TalonFX driveMotor,
-      WPI_TalonFX steeringMotor,
+      CANSparkMax steeringMotor,
       CANCoder wheelAngle,
       String name) {
 
     driveMotor.setNeutralMode(NeutralMode.Brake);
-    steeringMotor.setNeutralMode(NeutralMode.Brake);
+    steeringMotor.setIdleMode(IdleMode.kBrake);
     wheelAngle.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
 
     final double drivePulsesPerMeter = PARAMETERS.getDrivePulsesPerMeter();
