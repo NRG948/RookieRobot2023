@@ -5,6 +5,7 @@
 package frc.robot.parameters;
 
 import static frc.robot.parameters.MotorParameters.Falcon500;
+import static frc.robot.parameters.MotorParameters.NeoV1_1;
 import static frc.robot.parameters.SwerveModuleParameters.MK4Standard;
 import static frc.robot.parameters.SwerveModuleParameters.MK4Fast;
 
@@ -22,6 +23,8 @@ import edu.wpi.first.math.util.Units;
  */
 public enum SwerveDriveParameters {
 
+  
+
   /**
    * The 2022 competition robot using feedforward constants calculated from
    * theoretical maximums.
@@ -32,8 +35,9 @@ public enum SwerveDriveParameters {
       Units.inchesToMeters(19.39),
       MK4Standard,
       Falcon500,
-      new int[] { 1, 2, 3, 4, 7, 8, 5, 6 },
-      new int[] { 9, 10, 12, 11 },
+      NeoV1_1,
+      new int[] { 2, 3, 4, 5, 6, 7, 8, 9 }, // drive, steer motor controller CAN IDs
+      new int[] { 12, 14, 16, 18 }, // CANCoder CAN IDs
       0.15,
       0.15);
 
@@ -49,7 +53,8 @@ public enum SwerveDriveParameters {
   private final double wheelDistanceX;
   private final double wheelDistanceY;
   private final SwerveModuleParameters swerveModule;
-  private final MotorParameters motor;
+  private final MotorParameters driveMotor;
+  private final MotorParameters steeringMotor;
   private final int[] motorIds;
   private final int[] angleEncoderIds;
 
@@ -100,7 +105,8 @@ public enum SwerveDriveParameters {
    * @param wheelDistanceY      The distance between the wheels along the Y axis
    *                            in meters.
    * @param swerveModule        The swerve module used by the robot.
-   * @param motor               The motor used by swerve module on the robot.
+   * @param driveMotor          The motor used by swerve module drive on the robot.
+   * @param steeringMotor       The motor used by the swerve module steering on the robot.
    * @param motorIds            An array containing the CAN IDs of the swerve
    *                            module drive motors in the order front left drive
    *                            and steering, front right drive and steering, back
@@ -117,30 +123,34 @@ public enum SwerveDriveParameters {
       double wheelDistanceX,
       double wheelDistanceY,
       SwerveModuleParameters swerveModule,
-      MotorParameters motor,
+      MotorParameters driveMotor,
+      MotorParameters steeringMotor,
       int[] motorIds,
       int[] angleEncoderIds,
       FeedforwardConstants driveFeedForward,
-      FeedforwardConstants steeringFeedForward) {
+      FeedforwardConstants steeringFeedForward
+      ) {
     this.robotMass = robotMass;
     this.wheelDistanceX = wheelDistanceX;
     this.wheelDistanceY = wheelDistanceY;
     this.swerveModule = swerveModule;
-    this.motor = motor;
+    this.driveMotor = driveMotor;
+    this.steeringMotor = steeringMotor;
     this.motorIds = motorIds;
     this.angleEncoderIds = angleEncoderIds;
     this.driveFeedforward = driveFeedForward;
     this.steeringFeedforward = steeringFeedForward;
+    
 
     double scaleFactor = Constants.SCALE_FACTOR;
 
-    this.maxDriveSpeed = scaleFactor * this.swerveModule.calculateMaxDriveSpeed(this.motor);
+    this.maxDriveSpeed = scaleFactor * this.swerveModule.calculateMaxDriveSpeed(this.driveMotor);
     this.maxDriveAcceleration = scaleFactor
-        * this.swerveModule.calculateMaxDriveAcceleration(this.motor, this.robotMass);
+        * this.swerveModule.calculateMaxDriveAcceleration(this.driveMotor, this.robotMass);
 
-    this.maxSteeringSpeed = scaleFactor * this.swerveModule.calculateMaxSteeringSpeed(this.motor);
+    this.maxSteeringSpeed = scaleFactor * this.swerveModule.calculateMaxSteeringSpeed(this.steeringMotor);
     this.maxSteeringAcceleration = scaleFactor
-        * this.swerveModule.calculateMaxSteeringAcceleration(this.motor, this.robotMass);
+        * this.swerveModule.calculateMaxSteeringAcceleration(this.steeringMotor, this.robotMass);
 
     final double wheelTrackRadius = Math.hypot(this.wheelDistanceX, this.wheelDistanceY);
 
@@ -190,7 +200,8 @@ public enum SwerveDriveParameters {
    * @param wheelDistanceY  The distance between the wheels along the Y axis in
    *                        meters
    * @param swerveModule    The swerve module used by the robot.
-   * @param motor           The motor used by swerve module on the robot.
+   * @param driveMotor          The motor used by swerve module drive on the robot.
+   * @param steeringMotor       The motor used by the swerve module steering on the robot.
    * @param motorIds        An array containing the CAN IDs of the swerve module
    *                        drive motors in the order front left drive and
    *                        steering, front right drive and steering, back left
@@ -206,7 +217,8 @@ public enum SwerveDriveParameters {
       double wheelDistanceX,
       double wheelDistanceY,
       SwerveModuleParameters swerveModule,
-      MotorParameters motor,
+      MotorParameters driveMotor,
+      MotorParameters steeringMotor,
       int[] motorIds,
       int[] angleEncoderIds,
       double drivekS,
@@ -216,17 +228,19 @@ public enum SwerveDriveParameters {
         wheelDistanceX,
         wheelDistanceY,
         swerveModule,
-        motor,
+        driveMotor,
+        steeringMotor,
         motorIds,
         angleEncoderIds,
+        
         new CalculatedFeedforwardConstants(
             drivekS,
-            () -> swerveModule.calculateMaxDriveSpeed(motor),
-            () -> swerveModule.calculateMaxDriveAcceleration(motor, robotMass)),
+            () -> swerveModule.calculateMaxDriveSpeed(driveMotor),
+            () -> swerveModule.calculateMaxDriveAcceleration(driveMotor, robotMass)),
         new CalculatedFeedforwardConstants(
             steeringkS,
-            () -> swerveModule.calculateMaxSteeringSpeed(motor),
-            () -> swerveModule.calculateMaxSteeringAcceleration(motor, robotMass)));
+            () -> swerveModule.calculateMaxSteeringSpeed(steeringMotor),
+            () -> swerveModule.calculateMaxSteeringAcceleration(steeringMotor, robotMass)));
   }
 
   /**
@@ -311,7 +325,7 @@ public enum SwerveDriveParameters {
    * @return The motor used by swerve module on the robot.
    */
   public MotorParameters getMotorParameters() {
-    return this.motor;
+    return this.driveMotor;
   }
 
   /**
@@ -396,7 +410,7 @@ public enum SwerveDriveParameters {
    * @return The pulses per meter of the integrated encoder.
    */
   public double getDrivePulsesPerMeter() {
-    return this.swerveModule.calculateDrivePulsesPerMeter(this.motor);
+    return this.swerveModule.calculateDrivePulsesPerMeter(this.driveMotor);
   }
 
   /**
