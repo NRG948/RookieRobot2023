@@ -17,6 +17,7 @@ public class DriveUsingController extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
     m_driveTrain = driveTrain;
     m_xboxController = xboxController;
+    addRequirements(driveTrain);
   }
 
   // Called when the command is initially scheduled.
@@ -29,7 +30,7 @@ public class DriveUsingController extends CommandBase {
     double xSpeed = -m_xboxController.getLeftX();
     double ySpeed = -m_xboxController.getLeftY();
     double rSpeed = -m_xboxController.getRightX();
-    double inputScalar = Math.max(1-m_xboxController.getRightTriggerAxis(), 0.15);
+    double inputScalar = Math.max(m_xboxController.getRightTriggerAxis(), 0.15);
 
     // Applies deadbands to x, y, and rotation joystick values and multiples all
     // values with inputSalar whihc allows finer driving control.
