@@ -36,8 +36,8 @@ public enum SwerveDriveParameters {
       MK4Standard,
       Falcon500,
       NeoV1_1,
-      new int[] { 1, 2, 3, 4, 7, 8, 5, 6 },
-      new int[] { 9, 10, 12, 11 },
+      new int[] { 2, 3, 4, 5, 6, 7, 8, 9 }, // drive, steer motor controller CAN IDs
+      new int[] { 12, 14, 16, 18 }, // CANCoder CAN IDs
       0.15,
       0.15);
 
