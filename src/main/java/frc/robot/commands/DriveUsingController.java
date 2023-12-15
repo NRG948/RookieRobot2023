@@ -27,10 +27,10 @@ public class DriveUsingController extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double xSpeed = -m_xboxController.getLeftX();
-    double ySpeed = -m_xboxController.getLeftY();
+    double xSpeed = -m_xboxController.getLeftY();
+    double ySpeed = -m_xboxController.getLeftX();
     double rSpeed = -m_xboxController.getRightX();
-    double inputScalar = Math.max(m_xboxController.getRightTriggerAxis(), 0.15);
+    double inputScalar = Math.max(1.0-m_xboxController.getRightTriggerAxis(), 0.15);
 
     // Applies deadbands to x, y, and rotation joystick values and multiples all
     // values with inputSalar whihc allows finer driving control.
