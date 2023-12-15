@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
@@ -56,7 +57,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public static SwerveDriveParameters PARAMETERS = SwerveDriveParameters.RookieBase2023;
 
-  public static boolean ENABLE_DRIVE_TAB = false;
+  public static boolean ENABLE_DRIVE_TAB = true;
 
   public static boolean ENABLE_FIELD_TAB = false;
 
