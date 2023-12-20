@@ -32,6 +32,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -114,6 +115,9 @@ public class SwerveSubsystem extends SubsystemBase {
   private final SwerveDrive drivetrain;
   private final SwerveDrivePoseEstimator odometry;
   private final Field2d field = new Field2d();
+  private final PIDController yawPID = new PIDController(2.86479, 0, 0); //TODO:Tune.Tentatively 1 m/s for each PI/9 error since the error will be small?
+
+  private boolean isLockingOrientation = false;
 
   // The current sensor state updated by the periodic method.
   private Rotation2d rawOrientation;
@@ -328,6 +332,19 @@ public class SwerveSubsystem extends SubsystemBase {
    * @param tilt             The robot base tilt angle.
    */
   public void setChassisSpeeds(ChassisSpeeds speeds, boolean adjustForGravity) {
+    // corrects for orientation if no rotation is desired
+    if (speeds.omegaRadiansPerSecond == 0) {
+      if (!isLockingOrientation) { // enable PID controller when rotational speed turns 0. Mostly used to turn off the controller
+        isLockingOrientation = true;
+        yawPID.setSetpoint(getOrientation().getRadians());
+      }
+      double omegaFeedback = yawPID.calculate(getOrientation().getRadians());
+      speeds.omegaRadiansPerSecond = omegaFeedback;
+    } else if (isLockingOrientation) { // disable PID controller when there is rotational speed
+      isLockingOrientation = false;
+      yawPID.reset();
+    }
+
     drivetrain.setChassisSpeeds(speeds, adjustForGravity, getTilt());
   }
 
