@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class DriveUsingController extends CommandBase {
+  private final double DEADBAND = 0.05;
+
   private final SwerveSubsystem m_driveTrain;
   private final CommandXboxController m_xboxController;
   /** Creates a new DriveUsingController. */
@@ -34,9 +36,9 @@ public class DriveUsingController extends CommandBase {
 
     // Applies deadbands to x, y, and rotation joystick values and multiples all
     // values with inputSalar whihc allows finer driving control.
-    xSpeed = MathUtil.applyDeadband(xSpeed, inputScalar) * inputScalar;
-    ySpeed = MathUtil.applyDeadband(ySpeed, inputScalar) * inputScalar;
-    rSpeed = MathUtil.applyDeadband(rSpeed, inputScalar) * inputScalar;
+    xSpeed = MathUtil.applyDeadband(xSpeed, DEADBAND) * inputScalar;
+    ySpeed = MathUtil.applyDeadband(ySpeed, DEADBAND) * inputScalar;
+    rSpeed = MathUtil.applyDeadband(rSpeed, DEADBAND) * inputScalar;
 
     m_driveTrain.drive(
       xSpeed,
