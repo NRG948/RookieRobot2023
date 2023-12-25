@@ -40,6 +40,11 @@ public class DriveUsingController extends CommandBase {
     ySpeed = MathUtil.applyDeadband(ySpeed, DEADBAND) * inputScalar;
     rSpeed = MathUtil.applyDeadband(rSpeed, DEADBAND) * inputScalar;
 
+    // multiples all values with max speed.
+    xSpeed *= m_driveTrain.drivetrain.maxDriveSpeed;
+    ySpeed *= m_driveTrain.drivetrain.maxDriveSpeed;
+    rSpeed *= m_driveTrain.drivetrain.maxRotationalSpeed;
+
     m_driveTrain.drive(
       xSpeed,
       ySpeed,

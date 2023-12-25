@@ -28,8 +28,8 @@ public class SwerveDrive extends RobotDriveBase {
   private final SwerveModule[] modules;
   private final SwerveDriveKinematics kinematics;
   private final Supplier<Rotation2d> orientationSupplier;
-  private final double maxDriveSpeed;
-  private final double maxRotationalSpeed;
+  public final double maxDriveSpeed;
+  public final double maxRotationalSpeed;
 
   // The current supplied state updated by the periodic method.
   private Rotation2d orientation;
@@ -136,11 +136,6 @@ public class SwerveDrive extends RobotDriveBase {
    * @param fieldRelative Whether the x and y values are relative to field.
    */
   public void drive(double xSpeed, double ySpeed, double rSpeed, boolean fieldRelative) {
-    // multiples all values with max speed.
-    xSpeed *= m_maxOutput * maxDriveSpeed;
-    ySpeed *= m_maxOutput * maxDriveSpeed;
-    rSpeed *= m_maxOutput * maxRotationalSpeed;
-
     ChassisSpeeds speeds = fieldRelative
         ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rSpeed, orientation)
         : new ChassisSpeeds(xSpeed, ySpeed, rSpeed);
